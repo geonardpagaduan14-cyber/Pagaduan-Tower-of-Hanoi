@@ -8,6 +8,7 @@
 :- use_module(library(http/http_json)).
 :- use_module(library(lists)).
 :- use_module(library(apply)).
+:- use_module(library(readutil)).
 
 % ---------------------------------------------------------------
 % Remember the directory this file lives in, so files are found
@@ -17,22 +18,36 @@
 :- prolog_load_context(directory, Dir), assertz(base_dir(Dir)).
 
 % ---------------------------------------------------------------
-% Explicit routing (no prefix routing)
+% Explicit routing. Static files live in the "public" folder.
 % ---------------------------------------------------------------
-:- http_handler(root(.),              serve_index, []).
-:- http_handler(root('css/style.css'), serve_css,   []).
-:- http_handler(root('js/game.js'),    serve_js,    []).
-:- http_handler(root('api/move'),      handle_move,  [method(post)]).
-:- http_handler(root('api/solve'),     handle_solve, [method(post)]).
+:- http_handler(root(.),              serve_index,  []).
+:- http_handler(root('style.css'),    serve_css,    []).
+:- http_handler(root('game.js'),      serve_js,     []).
+:- http_handler(root('favicon.ico'),  no_content,   []).
+:- http_handler(root('api/move'),     handle_move,  [method(post)]).
+:- http_handler(root('api/solve'),    handle_solve, [method(post)]).
 
-serve_index(Request) :- serve_file('index.html',     'text/html',                Request).
-serve_css(Request)   :- serve_file('css/style.css',  'text/css',                 Request).
-serve_js(Request)    :- serve_file('js/game.js',     'application/javascript',   Request).
+serve_index(_) :- send_file('index.html', 'text/html').
+serve_css(_)   :- send_file('style.css',  'text/css').
+serve_js(_)    :- send_file('game.js',    'application/javascript').
+no_content(_)  :- format('Status: 204 No Content~n~n').
 
-serve_file(Relative, Mime, Request) :-
+% Read the file ourselves instead of http_reply_file/3. This avoids the
+% "No permission to read file" error that appears when the project sits
+% in a OneDrive / cloud-synced folder.
+send_file(Name, Mime) :-
     base_dir(Dir),
-    atomic_list_concat([Dir, '/', Relative], Path),
-    http_reply_file(Path, [mime_type(Mime), cache(false)], Request).
+    atomic_list_concat([Dir, '/public/', Name], Path),
+    catch(read_file_to_string(Path, Content, [encoding(utf8)]), E, true),
+    (   var(E)
+    ->  format('Content-Type: ~w; charset=UTF-8~n', [Mime]),
+        format('Cache-Control: no-store~n~n'),
+        write(Content)
+    ;   term_to_atom(E, Why),
+        format('Status: 500 Internal Server Error~n'),
+        format('Content-Type: text/plain; charset=UTF-8~n~n'),
+        format('Could not read ~w~n~w~n', [Path, Why])
+    ).
 
 % ---------------------------------------------------------------
 % POST /api/move   {state: [[..],[..],[..]], from: Int, to: Int}

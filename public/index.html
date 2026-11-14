@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tower of Hanoi · Prolog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb orb-c"></div>
+
+  <div class="app">
+    <header class="topbar glass">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect x="6" y="22" width="20" height="5" rx="2.5" fill="#7dd3fc"/><rect x="9" y="15" width="14" height="5" rx="2.5" fill="#a78bfa"/><rect x="12" y="8" width="8" height="5" rx="2.5" fill="#f0abfc"/></svg>
+        <div><h1>Tower of Hanoi</h1><p class="subtitle">Every move is verified by SWI-Prolog</p></div>
+      </div>
+      <span class="badge"><i></i> Prolog engine</span>
+    </header>
+
+    <div id="offline-banner" class="offline-banner glass" role="alert" hidden>
+      Can't reach the Prolog server. Start it with <code>swipl hanoi.pl</code> and open <code>http://localhost:8080</code>.
+    </div>
+
+    <div class="layout">
+      <section class="board-panel glass">
+        <p id="message" class="message" role="status"></p>
+        <div class="board-well">
+          <div class="board" id="board">
+            <div class="pegs-row">
+              <div class="peg-wrap" data-peg="0" role="button" tabindex="0" aria-label="Peg 1"><div class="peg-rod"></div><div class="disks-area"><div class="disks-stack"></div></div></div>
+              <div class="peg-wrap" data-peg="1" role="button" tabindex="0" aria-label="Peg 2"><div class="peg-rod"></div><div class="disks-area"><div class="disks-stack"></div></div></div>
+              <div class="peg-wrap" data-peg="2" role="button" tabindex="0" aria-label="Peg 3"><div class="peg-rod"></div><div class="disks-area"><div class="disks-stack"></div></div></div>
+            </div>
+            <div class="base"><span class="base-label">1</span><span class="base-label">2</span><span class="base-label">3</span></div>
+          </div>
+        </div>
+        <p class="hint">Tap a peg to lift its top disk, then tap another peg to drop it. Move the whole tower to peg 3.</p>
+      </section>
+
+      <aside class="side">
+        <section class="stats glass" aria-label="Game statistics">
+          <div class="counter"><span class="counter-label">Time</span><span class="counter-value" id="time">0:00.0</span></div>
+          <div class="counter"><span class="counter-label">Moves</span><span class="counter-value" id="moves">0</span></div>
+          <div class="counter"><span class="counter-label">Invalid</span><span class="counter-value" id="invalid">0</span></div>
+          <div class="counter"><span class="counter-label">Optimal</span><span class="counter-value" id="optimal">15</span></div>
+        </section>
+
+        <section class="controls glass" aria-label="Game controls">
+          <label class="control"><span>Disks</span>
+            <select id="disk-count">
+              <option value="3">3</option><option value="4" selected>4</option><option value="5">5</option>
+              <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+            </select>
+          </label>
+          <label class="control speed-control"><span>Speed <strong id="speed-label">3x</strong></span>
+            <input type="range" id="speed" min="1" max="10" step="1" value="3">
+          </label>
+          <div class="btn-row">
+            <button type="button" class="btn ghost" id="new-game">New Game</button>
+            <button type="button" class="btn primary" id="auto-solve">Auto-Solve</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <div id="victory-modal" class="modal-overlay" hidden>
+    <div class="modal glass" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+      <h2 id="victory-title">Tower Complete!</h2>
+      <p id="victory-note" class="modal-note"></p>
+      <dl class="modal-stats">
+        <div><dt>Time</dt><dd id="v-time">0:00.0</dd></div>
+        <div><dt>Moves</dt><dd id="v-moves">0</dd></div>
+        <div><dt>Optimal</dt><dd id="v-optimal">0</dd></div>
+      </dl>
+      <div class="btn-row">
+        <button type="button" class="btn primary" id="v-again">Play Again</button>
+        <button type="button" class="btn ghost" id="v-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/game.js" defer></script>
+</body>
+</html>

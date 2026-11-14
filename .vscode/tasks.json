@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Hanoi Server",
+      "type": "shell",
+      "command": "swipl",
+      "args": ["hanoi.pl"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": {
+        "pattern": { "regexp": "^$" },
+        "background": { "activeOnStart": true, "beginsPattern": ".", "endsPattern": "Press Ctrl\\+C" }
+      }
+    }
+  ]
+}
