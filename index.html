@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tower of Hanoi</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="game-container">
+    <h1>Tower of Hanoi</h1>
+    <p class="subtitle">Every move is checked by SWI-Prolog</p>
+
+    <div id="offline-banner" class="offline-banner" role="alert" hidden>
+      Can't reach the Prolog server. Moves are blocked until it's back.
+      Start it with <code>swipl hanoi.pl</code> and open <code>http://localhost:8080</code>.
+    </div>
+
+    <section class="stats" aria-label="Game statistics">
+      <div class="counter"><span class="counter-label">Time</span><span class="counter-value" id="time">0:00.0</span></div>
+      <div class="counter"><span class="counter-label">Moves</span><span class="counter-value" id="moves">0</span></div>
+      <div class="counter"><span class="counter-label">Invalid</span><span class="counter-value" id="invalid">0</span></div>
+      <div class="counter"><span class="counter-label">Optimal</span><span class="counter-value" id="optimal">15</span></div>
+    </section>
+
+    <section class="controls" aria-label="Game controls">
+      <label class="control">
+        <span>Disks</span>
+        <select id="disk-count">
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+      <button type="button" class="btn" id="new-game">New Game</button>
+      <button type="button" class="btn" id="auto-solve">Auto-Solve</button>
+      <label class="control speed-control">
+        <span>Speed <strong id="speed-label">3x</strong></span>
+        <input type="range" id="speed" min="1" max="10" step="1" value="3">
+      </label>
+    </section>
+
+    <p id="message" class="message" role="status"></p>
+
+    <section class="board-well">
+      <div class="board" id="board">
+        <div class="pegs-row">
+          <div class="peg-wrap" data-peg="0" role="button" tabindex="0" aria-label="Peg 1">
+            <div class="peg-rod"></div>
+            <div class="disks-area"><div class="disks-stack"></div></div>
+          </div>
+          <div class="peg-wrap" data-peg="1" role="button" tabindex="0" aria-label="Peg 2">
+            <div class="peg-rod"></div>
+            <div class="disks-area"><div class="disks-stack"></div></div>
+          </div>
+          <div class="peg-wrap" data-peg="2" role="button" tabindex="0" aria-label="Peg 3">
+            <div class="peg-rod"></div>
+            <div class="disks-area"><div class="disks-stack"></div></div>
+          </div>
+        </div>
+        <div class="base">
+          <span class="base-label">1</span>
+          <span class="base-label">2</span>
+          <span class="base-label">3</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="hint">Tap a peg to pick up its top disk, then tap another peg to drop it. Move the whole tower to peg 3.</p>
+  </main>
+
+  <div id="victory-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+      <h2 id="victory-title">Tower Complete!</h2>
+      <p id="victory-note" class="modal-note"></p>
+      <dl class="modal-stats">
+        <div><dt>Time</dt><dd id="v-time">0:00.0</dd></div>
+        <div><dt>Moves</dt><dd id="v-moves">0</dd></div>
+        <div><dt>Optimal</dt><dd id="v-optimal">0</dd></div>
+      </dl>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="v-again">Play Again</button>
+        <button type="button" class="btn" id="v-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/game.js" defer></script>
+</body>
+</html>
